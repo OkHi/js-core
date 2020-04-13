@@ -15,7 +15,8 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "package": "tsdx lint && tsdx test && tsdx build"
   },
   "peerDependencies": {},
   "husky": {
@@ -38,5 +39,16 @@
     "tsdx": "^0.13.1",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
-  }
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OkHi/js-core/tree/master"
+  },
+  "bugs": {
+    "url": "https://github.com/OkHi/js-core/issues"
+  },
+  "homepage": "https://github.com/OkHi/js-core/tree/master#readme"
 }
