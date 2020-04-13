@@ -78,6 +78,23 @@ export interface OkHiCoreConfiguration {
   context?: OkHiAppContext;
 }
 
+export const OkHiErrorCodes = {
+  unauthorized: 'unauthorized',
+  network_error: 'network_error',
+  invalid_configuration: 'invalid_configuration',
+  invalid_phone: 'invalid_phone',
+  unknown_error: 'unknown_error',
+};
+
+export const OkHiErrorMessages = {
+  unauthorized: 'Invalid authorization credentials provided',
+  network_error: 'Unable to connect to OkHi servers',
+  invalid_configuration: 'Invalid configuration provided',
+  invalid_phone:
+    'Invalid phone number provided. Please make sure its in MSISDN standard format',
+  unknown_error: 'Something went wrong',
+};
+
 export class OkHiException extends Error {
   code: string;
   constructor(error: OkHiError) {
