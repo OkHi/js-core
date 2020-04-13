@@ -15,7 +15,8 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "package": "tsdx lint && tsdx test && tsdx build"
   },
   "peerDependencies": {},
   "husky": {
