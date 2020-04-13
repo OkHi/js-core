@@ -6,6 +6,8 @@ import {
   OkHiMode,
   OkHiIntergrationType,
   OkHiException,
+  OkHiErrorCodes,
+  OkHiErrorMessages,
 } from './types';
 
 export default class OkHiCore {
@@ -92,16 +94,16 @@ export default class OkHiCore {
       );
       if (!data.authorization_token) {
         throw new OkHiException({
-          code: 'unauthorized',
-          message: 'Invalid authorization token provided',
+          code: OkHiErrorCodes.unauthorized,
+          message: OkHiErrorMessages.unauthorized,
         });
       }
       return `Token ${data.authorization_token}`;
     } catch (error) {
       if (!error.response || error.response.status !== 200) {
         throw new OkHiException({
-          code: 'network_error',
-          message: 'Unable to connect to OkHi servers',
+          code: OkHiErrorCodes.network_error,
+          message: OkHiErrorMessages.network_error,
         });
       } else {
         throw error;
@@ -115,8 +117,8 @@ export default class OkHiCore {
 
       if (typeof userId !== 'string') {
         throw new OkHiException({
-          code: 'invalid_configuration',
-          message: 'Invalid authorization configuration provided',
+          code: OkHiErrorCodes.invalid_configuration,
+          message: OkHiErrorMessages.invalid_configuration,
         });
       }
 
@@ -131,8 +133,8 @@ export default class OkHiCore {
 
       if (!data.authorization_token) {
         throw new OkHiException({
-          code: 'unauthorized',
-          message: 'Invalid authorization token provided',
+          code: OkHiErrorCodes.unauthorized,
+          message: OkHiErrorMessages.unauthorized,
         });
       }
 
@@ -140,8 +142,8 @@ export default class OkHiCore {
     } catch (error) {
       if (!error.response || error.response.status !== 200) {
         throw new OkHiException({
-          code: 'network_error',
-          message: 'Unable to connect to OkHi servers',
+          code: OkHiErrorCodes.network_error,
+          message: OkHiErrorMessages.network_error,
         });
       } else {
         throw error;
