@@ -25,7 +25,7 @@ export const OkHiIntergrationType = {
 export interface OkHiBaseContext {
   mode?: string;
   platform?: { name: string };
-  developer?: { name: 'okhi' | 'external' };
+  developer?: { name: string };
 }
 
 export interface OkHiAppContext extends OkHiBaseContext {
@@ -71,4 +71,19 @@ export interface OkHiUser {
   firstName?: string;
   lastName?: string;
   phone: string;
+}
+
+export interface OkHiCoreConfiguration {
+  auth: string;
+  context?: OkHiAppContext;
+}
+
+export class OkHiException extends Error {
+  code: string;
+  constructor(error: OkHiError) {
+    super(error.message);
+    this.name = 'OkHiException';
+    this.message = error.message;
+    this.code = error.code;
+  }
 }
