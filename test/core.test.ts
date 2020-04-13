@@ -11,14 +11,12 @@ describe('okhi core dev tests', () => {
 
   it('fetches and authorization token', async () => {
     const token = await core.fetchAuthorizationToken();
-    const isToken = token.startsWith('Token ');
-    expect(isToken).toBeTruthy();
+    expect(token).toBeTruthy();
   });
 
   it('fetches and user authorization token', async () => {
     const userId = 'i3c5W92cB8';
     const token = await core.fetchUserVerificationToken(userId);
-    const isToken = token.startsWith('Token ');
-    expect(isToken).toBeTruthy();
+    expect(token).toBeTruthy();
   });
 });
