@@ -1,5 +1,4 @@
-import * as OkHi from './auth';
+import OkHiCore from './core';
 
 export * from './types';
-
-export default OkHi;
+export default OkHiCore;
