@@ -148,4 +148,8 @@ export default class OkHiCore {
       }
     }
   };
+
+  fetchOkHiContext = () => {
+    return this.context;
+  };
 }
