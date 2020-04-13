@@ -42,5 +42,13 @@
   },
   "dependencies": {
     "axios": "^0.19.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OkHi/js-core/tree/master"
+  },
+  "bugs": {
+    "url": "https://github.com/OkHi/js-core/issues"
+  },
+  "homepage": "https://github.com/OkHi/js-core/tree/master#readme"
 }
