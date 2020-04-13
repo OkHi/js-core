@@ -55,7 +55,7 @@ export default class OkHiCore {
       this.context = { ...this.context, ...context, container };
     }
 
-    this.ACCESS_TOKEN = `Token ${auth}`;
+    this.ACCESS_TOKEN = auth;
 
     // define endpoints
     if (this.context.mode === OkHiMode.DEV) {
@@ -86,7 +86,7 @@ export default class OkHiCore {
         AUTHORIZATION_URL,
         {
           headers: {
-            Authorization: ACCESS_TOKEN,
+            Authorization: `Token ${ACCESS_TOKEN}`,
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
@@ -98,7 +98,7 @@ export default class OkHiCore {
           message: OkHiErrorMessages.unauthorized,
         });
       }
-      return `Token ${data.authorization_token}`;
+      return data.authorization_token;
     } catch (error) {
       if (!error.response || error.response.status !== 200) {
         throw new OkHiException({
@@ -125,7 +125,7 @@ export default class OkHiCore {
       const link = `${USER_VERIFY_TOKEN_URL_PREFIX}?user-id=${userId}`;
       const { data } = await axios.get<{ authorization_token: string }>(link, {
         headers: {
-          Authorization: ACCESS_TOKEN,
+          Authorization: `Token ${ACCESS_TOKEN}`,
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
@@ -138,7 +138,7 @@ export default class OkHiCore {
         });
       }
 
-      return `Token ${data.authorization_token}`;
+      return data.authorization_token;
     } catch (error) {
       if (!error.response || error.response.status !== 200) {
         throw new OkHiException({
