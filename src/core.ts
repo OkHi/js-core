@@ -1,4 +1,4 @@
-import axios from 'axios';
+import User from './user';
 import {
   OkHiCoreConfiguration,
   OkHiContext,
@@ -6,26 +6,15 @@ import {
   OkHiMode,
   OkHiIntergrationType,
   OkHiException,
-  OkHiErrorCodes,
-  OkHiErrorMessages,
 } from './types';
 
-export default class OkHiCore {
-  private readonly DEV_AUTH_URL =
-    'https://dev-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly SANDBOX_AUTH_URL =
-    'https://sandbox-api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly PROD_AUTH_URL =
-    'https://api.okhi.io/v5/auth/mobile/generate-auth-token';
-  private readonly DEV_USER_VERIFY_TOKEN_URL_PREFIX =
-    'https://dev-api.okhi.io/v5/auth/verification-token';
-  private readonly SANDBOX_USER_VERIFY_TOKEN_URL_PREFIX =
-    'https://sandbox-api.okhi.io/v5/auth/verification-token';
-  private readonly PROD_USER_VERIFY_TOKEN_URL_PREFIX =
-    'https://api.okhi.io/v5/auth/verification-token';
+const API_VERSION = 'v5';
+const DEV_BASE_URL = `https://dev-api.okhi.io/${API_VERSION}`;
+const SANDBOX_BASE_URL = `https://sandbox-api.okhi.io/${API_VERSION}`;
+const PROD_BASE_URL = `https://api.okhi.io/${API_VERSION}`;
 
-  private readonly AUTHORIZATION_URL: string;
-  private readonly USER_VERIFY_TOKEN_URL_PREFIX: string;
+export default class OkHiCore {
+  private readonly BASE_URL: string;
   private readonly context: OkHiContext = {
     developer: {
       name: OkHiIntergrationType.OKHI,
@@ -35,9 +24,8 @@ export default class OkHiCore {
     },
     mode: OkHiMode.SANDBOX,
   };
-
   private ACCESS_TOKEN: string;
-  private AUTHORIZATION_TOKEN: string | undefined;
+  public user: User;
 
   constructor(configuration: OkHiCoreConfiguration) {
     const { auth, context } = configuration;
@@ -57,101 +45,27 @@ export default class OkHiCore {
 
     this.ACCESS_TOKEN = auth;
 
-    // define endpoints
+    // define base rest url
     if (this.context.mode === OkHiMode.DEV) {
-      this.AUTHORIZATION_URL = this.DEV_AUTH_URL;
-      this.USER_VERIFY_TOKEN_URL_PREFIX = this.DEV_USER_VERIFY_TOKEN_URL_PREFIX;
+      this.BASE_URL = DEV_BASE_URL;
     } else if (this.context.mode === OkHiMode.PROD) {
-      this.AUTHORIZATION_URL = this.PROD_AUTH_URL;
-      this.USER_VERIFY_TOKEN_URL_PREFIX = this.PROD_USER_VERIFY_TOKEN_URL_PREFIX;
+      this.BASE_URL = PROD_BASE_URL;
     } else {
-      this.AUTHORIZATION_URL = this.SANDBOX_AUTH_URL;
-      this.USER_VERIFY_TOKEN_URL_PREFIX = this.SANDBOX_USER_VERIFY_TOKEN_URL_PREFIX;
+      this.BASE_URL = SANDBOX_BASE_URL;
     }
 
-    this.fetchAuthorizationToken()
-      .then(token => {
-        this.AUTHORIZATION_TOKEN = token;
-      })
-      .catch(() => {});
+    this.user = new User(this);
   }
 
-  fetchAuthorizationToken = async () => {
-    const { AUTHORIZATION_TOKEN, AUTHORIZATION_URL, ACCESS_TOKEN } = this;
-    if (AUTHORIZATION_TOKEN) {
-      return AUTHORIZATION_TOKEN;
-    }
-    try {
-      const { data } = await axios.get<{ authorization_token: string }>(
-        AUTHORIZATION_URL,
-        {
-          headers: {
-            Authorization: `Token ${ACCESS_TOKEN}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (!data.authorization_token) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.unauthorized,
-          message: OkHiErrorMessages.unauthorized,
-        });
-      }
-      return data.authorization_token;
-    } catch (error) {
-      if (!error.response || error.response.status !== 200) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.network_error,
-          message: OkHiErrorMessages.network_error,
-        });
-      } else {
-        throw error;
-      }
-    }
-  };
-
-  fetchUserVerificationToken = async (userId: string) => {
-    try {
-      const { USER_VERIFY_TOKEN_URL_PREFIX, ACCESS_TOKEN } = this;
-
-      if (typeof userId !== 'string') {
-        throw new OkHiException({
-          code: OkHiErrorCodes.invalid_configuration,
-          message: OkHiErrorMessages.invalid_configuration,
-        });
-      }
-
-      const link = `${USER_VERIFY_TOKEN_URL_PREFIX}?user-id=${userId}`;
-      const { data } = await axios.get<{ authorization_token: string }>(link, {
-        headers: {
-          Authorization: `Token ${ACCESS_TOKEN}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!data.authorization_token) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.unauthorized,
-          message: OkHiErrorMessages.unauthorized,
-        });
-      }
-
-      return data.authorization_token;
-    } catch (error) {
-      if (!error.response || error.response.status !== 200) {
-        throw new OkHiException({
-          code: OkHiErrorCodes.network_error,
-          message: OkHiErrorMessages.network_error,
-        });
-      } else {
-        throw error;
-      }
-    }
-  };
-
-  fetchOkHiContext = () => {
+  getContext = () => {
     return this.context;
+  };
+
+  getAccessToken = () => {
+    return this.ACCESS_TOKEN;
+  };
+
+  getBaseUrl = () => {
+    return this.BASE_URL;
   };
 }

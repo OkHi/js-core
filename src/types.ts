@@ -1,3 +1,5 @@
+export type OkHiAccessScope = 'verify' | 'address' | 'checkout' | 'profile';
+
 export interface OkHiAuth {
   clientKey: string;
   branchId: string;
@@ -70,7 +72,7 @@ export interface OkHiUser {
   id?: string;
   firstName?: string;
   lastName?: string;
-  phone: string;
+  phone?: string;
 }
 
 export interface OkHiCoreConfiguration {
