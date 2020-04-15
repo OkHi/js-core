@@ -9,14 +9,31 @@ describe('okhi core dev tests', () => {
   };
   const core = new OkHiCore(configuration);
 
-  it('fetches and authorization token', async () => {
-    const token = await core.fetchAuthorizationToken();
+  it('it signs in user anonymously with phone number', async () => {
+    const token = await core.user.anonymousSignWithPhoneNumber(
+      '+254700110590',
+      ['verify']
+    );
     expect(token).toBeTruthy();
   });
 
-  it('fetches and user authorization token', async () => {
-    const userId = 'i3c5W92cB8';
-    const token = await core.fetchUserVerificationToken(userId);
+  it('it signs in user anonymously with userId', async () => {
+    const userId = '5kCVI3G6AO';
+    const token = await core.user.anonymousSignInWithUserId(userId, ['verify']);
     expect(token).toBeTruthy();
+  });
+
+  it('it prevents anonymous sign in with bad userId', async () => {
+    const userId = 'abc';
+    await expect(
+      core.user.anonymousSignInWithUserId(userId, ['verify'])
+    ).rejects.toThrowError();
+  });
+
+  it('it prevents anonymous sign in with bad phone', async () => {
+    const phone = 'abc';
+    await expect(
+      core.user.anonymousSignWithPhoneNumber(phone, ['verify'])
+    ).rejects.toThrowError();
   });
 });
